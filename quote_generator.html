@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="author" content="Tikeshwari">
+  <meta name="description" content="quote generator for all kind of situtions">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quote Generator</title>
+</head>
+
+<body onkeyup="my_quotes() ">
+
+   <h1>Quote Generator</h1>
+
+   <div id="main">
+
+      <div class="warp">
+            <div class="container">
+                <p class="quote" id="quote">Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, uoy will be successful. </p>
+
+                <div class="bottom">
+                    <p>  ~ <span id="author">Albert Schweitzer</span></p>
+                </div>
+            </div>
+        </div>
+        <div>
+          <button class="btn" id="next_btn" onclick="my_quotes()">Next Quote</button>
+        </div>
+    </div>
+  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+    <script>
+        
+        var quoteObj = [];
+        var quotSrc = 'https://cdn.jsdelivr.net/gh/7ORP3DO/Random-Quote-Generator@main/quotes.json';
+        var colors = [
+            '#490A3D', '#BD1550', '#E97F02', '#bf9c00', '#8A9B0F', '#21sum', '#sdc22q',
+            '#1cadca', '#FA6900', '#16a085', '#27ae60', '#2c3e50', '#f39c12',
+            '#e74c3c', '#9b59b6', '#FB6964', '#342224', '#472E32', '#008a77', '#73A857'
+        ];
+
+        $.ajax({
+            url: quotSrc,
+            dataType: 'json',
+            type: 'get',
+            success: (data) => {
+               quoteObj = data.quotes;
+               my_quotes();
+            }
+        })
+
+        function my_quotes() {
+            var quotes_lenth = quoteObj.length;
+            var randIndex = Math.floor(Math.random() * quotes_lenth);
+            var randQuoteObj = quoteObj[randIndex];
+            var quote = randQuoteObj['quote'];
+            var author = randQuoteObj['author'];
+
+            $('#quote').text(quote);
+            $('#author').text(author);
+
+            bgcolors();
+        }
+
+        function bgcolors() {
+            var colors_lenth = colors.length;
+            var randIndex = Math.floor(Math.random() * colors_lenth);
+            var randColor = colors[randIndex];
+
+            document.documentElement.style.setProperty('--color', randColor)
+        }
+    </script>
+
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Lora:ital@1&display=swap");
+        @import url("https://fonts.googleapis.com/css2?family=Delius+Swash+Caps&display=swap");
+
+        :root {
+           --color: #b41052;
+        }
+
+        * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+            font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            transition: all 0.3s;
+            -webkit-transition: all 0.3s;
+            -moz-transition: all 0.3s;
+            -ms-transition: all 0.3s;
+            -o-transition: all 0.3s;
+        }
+
+        body {
+            background: #1e02d1;
+            min-height: 100vh;
+            color: white;
+        }
+
+        h1 {
+            position: absolute;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+            font-family: "Baskerville Old Faces", "Helvetica";
+            left: 0;
+            right: 0;
+            top: 5vh;
+            padding: 5px;
+        }
+
+        #main {
+            position: absolute;
+            width: 80%;
+            max-width: 600px;
+            top: 23vh;
+            left: 0;
+            right: 0;
+            margin-left: auto;
+            margin-right: auto;
+        }
+          
+        .warp{
+              min-height:45vh;
+        }
+          
+        .container {
+            background: var(--color);
+            padding: 0;
+            overflow: hidden;
+            box-shadow: black 4px 4px 6px;
+            border-radius: 0.5em;
+            -webkit-border-radius: 0.5em;
+            -moz-border-radius: 0.5em;
+            -ms-border-radius: 0.5em;
+            -o-border-radius: 0.5em;
+        }
+          
+        .container .quote {
+            font-size: 1.4em;
+            padding: 1.5em 1em 0.5em 1em;
+            text-align: justify;
+            font-family:'Times New Roman', Times, serif;
+        }
+
+        .container .bottom {
+            background: #12121266;
+        }
+          
+        .container .bottom p {
+            text-align: center;
+            padding: 0.8em;
+            font-size: 1.2em;
+            font-family: "lora", "Times New Roman", 'cursive';
+        }
+          
+        .btn {
+            margin: auto;
+            display: block;
+            margin-top: 1.5em;
+            padding: 00.2em 1em;
+            font-size: 1.3em;
+            border-radius: 0.3em;
+            color: white;
+            border: 2px solid transparent;
+            box-shadow: black 6px 5px 3px;
+            background-color: var(--color);
+            cursor: pointer;
+            -webkit-border-radius: 0.3em;
+            -moz-border-radius: 0.3em;
+            -ms-border-radius: 0.3em;
+            -o-border-radius: 0.3em;
+        }
+          
+        .btn:hover {
+            box-shadow: black 3px 3px 3px;
+            transform: translateY(4px);
+            border: 2px solid white;
+            -webkit-transform: translateY(4px);
+            -moz-transform: translateY(4px);
+            -ms-transform: translateY(4px);
+            -o-transform: translateY(4px);
+        }
+          
+        @media only screen and (min-width: 600px) {
+           .container .quote {
+                font-size: 2em;
+            }
+        }
+    </style>
+</body>
+
+</html>
