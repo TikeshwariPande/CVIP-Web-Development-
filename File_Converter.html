@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Converter</title>
+
+  <style>
+    h1 {
+      text-align: center;
+    }
+
+    .body{
+      align-content: center;
+      width: auto;
+      background-color: blanchedalmond;
+    }
+    .container {
+      padding: 25px auto;
+      display:inherit;
+      background-color:rgb(80, 177, 247);
+      color: rgba(17, 6, 75, 0.92);
+      min-width: fit-content;
+      height: max-content;
+      width: 600px;
+      text-align: center;
+      align-items: center;
+      border: 1px solid brown;
+      opacity: initial;
+      margin: 50px auto;
+    }
+
+    #input {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px;
+    }
+
+    #output {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px;
+    }
+
+    select, button {
+      width: 200px;
+      height: 40px;
+      font-size: 20px;
+    }
+
+    input[type=file] {
+      width: 200px;
+      height: 40px;
+      font-size: 16px;
+    }
+    button.hover{
+      border: 1px solid red;
+      box-shadow: inset;
+    }
+  </style>
+
+</head>
+
+<body>
+  <h1 style="color: rgb(65, 7, 236);">File Converter</h1>
+
+  <div class="container" >
+  <div id="input">
+    <p>Select a file to convert:</p>
+    <input type="file" id="file" accept=".txt,.pdf,.docx,.xlsx,.pptx">
+    <p>Select a format to convert to:</p>
+    <select id="format">
+      <option value="Text file">TXT (.txt)</option>
+      <option value="PDF file">PDF (.pdf)</option>
+      <option value="Document file">DOCX (.doc and .docx)</div></option>
+      <option value="Xml file ">XML (.xml)</option>
+      <option value="Pptx file">PPTX (.ppt)</option>
+      <option value="Html file">HTML (.html)</option>
+      <option value="Svg File">SVG (.svg)</option>
+      <option value="Xml file">XML (.xml)</option>
+    </select>
+    <button id="convert">Convert</button>
+  </div>
+  <div id="output">
+    <p>Save your converted file:</p>
+    <button id="save">Save </button>
+    <button id="saveAs" onclick="saveFile()">Save As...</button>
+  </div>
+  </div>
+
+  <script>
+
+    var file = document.getElementById("file");
+    var format = document.getElementById("format");
+    var convert = document.getElementById("convert");
+    var save = document.getElementById("save");
+    var saveAs = document.getElementById("saveAs");
+
+    convert.addEventListener("click", function() {
+      if (file.files.length == 0) {
+        alert("Please select a file to convert.");
+        return;
+      }
+      var fileName = file.files[0].name;
+      var fileExt = fileName.split(".").pop();
+      if (format.value == fileExt) {
+        alert("Please select a different format to convert to.");
+        return;
+      }
+      var formData = new FormData();
+      formData.append("file", file.files[0]);
+      formData.append("format", format.value);
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "https://example.com/convert");
+      xhr.responseType = "blob";
+      xhr.addEventListener("load", function() {
+        if (xhr.status == 200) {
+          var url = URL.createObjectURL(xhr.response);
+          save.dataset.url = url;
+          save.dataset.name = fileName.replace(fileExt, format.value);
+          saveAs.dataset.url = url;
+          save.style.display = "block";
+          saveAs.style.display = "block";
+          alert("your file is converted successfully!");
+        } else {
+          alert("Something went wrong. Please try again later.");
+        }
+      });
+
+      xhr.send(formData);
+    });
+
+    save.addEventListener("click", function() {
+
+      if (save.dataset.url && save.dataset.name) {
+        var link = document.createElement("a");
+        link.href = save.dataset.url;
+        link.download = save.dataset.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        save.style.display = "none";
+        saveAs.style.display = "none";        
+        URL.revokeObjectURL(save.dataset.url);
+        delete save.dataset.url;
+        delete save.dataset.name;
+        delete saveAs.dataset.url;
+      }
+      alert("File saved successfully!");
+    });
+
+    saveAs.addEventListener("click", function(){
+      if (saveAs.dataset.url) {
+        var newName = prompt("Enter a new file name:");
+        if (newName && newName.length > 0) {
+          var link = document.createElement("a");
+          link.href = saveAs.dataset.url;
+          link.download = newName;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          save.style.display = "none";
+          saveAs.style.display = "none";
+          URL.revokeObjectURL(saveAs.dataset.url);
+        }
+      }
+    });
+
+    function saveFile() {
+      var filename = prompt("enter a new filename");
+      var blob = new Blob([file], {type: 'text/plain'});
+      if(window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveBlob(blob, filename);
+      }
+      else{
+        var elem = window.document.createElement('a');
+        elem.href = window.URL.createObjectURL(blob);
+        elem.download = filename;        
+        document.body.appendChild(elem);
+        elem.click();        
+        document.body.removeChild(elem);
+      }
+    }
+    
+  </script>
+  
+</body>
+</html>
